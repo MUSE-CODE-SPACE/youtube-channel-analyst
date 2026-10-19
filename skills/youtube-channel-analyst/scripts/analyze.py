@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """studio_data.json → 지표 계산 + 자동 신호(signals) → report.md / summary.json
 
-Usage: analyze.py DIR   (DIR/studio_data.json 을 읽어 DIR/report.md, DIR/summary.json 생성)
+Usage: analyze.py DIR [--compare PREV_DIR]
+  DIR/studio_data.json → DIR/report.md, DIR/summary.json
+  --compare: 이전 분석 폴더(summary.json)와 최근 28일 지표를 비교해 '지난번 대비' 섹션을 맨 앞에 넣는다.
 """
 import json, os, re, sys
 
-d_dir = sys.argv[1]
+args = sys.argv[1:]
+d_dir = args[0]
+prev_dir = args[args.index("--compare") + 1] if "--compare" in args else None
 data = json.load(open(os.path.join(d_dir, "studio_data.json"), encoding="utf-8"))
 P = data["periods"]
 RECENT = "4_weeks" if "4_weeks" in P else list(P)[-1]
@@ -188,6 +192,38 @@ if crow:
     share = pct(top.get("views"), ct.get("views"))
     md.append(f"\n## 5. 시청자 국가\n상위: " + ", ".join(f"{r['title']} {f(pct(r.get('views'), ct.get('views')), 1, '%')}" for r in crow[:5]))
     summary["country_top"] = [(r["title"], pct(r.get("views"), ct.get("views"))) for r in crow[:5]]
+
+if prev_dir:
+    prev = json.load(open(os.path.join(prev_dir, "summary.json"), encoding="utf-8"))
+    pc = prev.get("content_type", {}).get(RECENT, {})
+    cc = summary.get("content_type", {}).get(RECENT, {})
+    rows = ["## 0. 지난번 대비 (최근 28일 창 기준)",
+            f"이전 수집 {prev.get('collected_at')} ({pc.get('range', '')}) → 이번 {data['collected_at']} ({cc.get('range', '')})", "",
+            "| 지표 | 이전 | 이번 | 변화 |", "|---|---|---|---|"]
+    def delta_row(label, a, b, nd=0, suf=""):
+        if a is None and b is None:
+            return
+        ch = "—" if a is None or b is None else (f"{b - a:+,.{nd}f}{suf}" + (f" ({(b - a) / a * 100:+.0f}%)" if a else ""))
+        rows.append(f"| {label} | {f(a, nd, suf)} | {f(b, nd, suf)} | {ch} |")
+    pt, ct = pc.get("total", {}), cc.get("total", {})
+    delta_row("조회", pt.get("views"), ct.get("views"))
+    delta_row("구독", pt.get("subs"), ct.get("subs"))
+    delta_row("시청 시간(h)", pt.get("watch_h"), ct.get("watch_h"), 1)
+    delta_row("노출", pt.get("impr"), ct.get("impr"))
+    delta_row("클릭률", pt.get("ctr"), ct.get("ctr"), 1, "%")
+    for name in sorted(set(pc.get("split", {})) | set(cc.get("split", {}))):
+        a, b = pc.get("split", {}).get(name, {}), cc.get("split", {}).get(name, {})
+        delta_row(f"{name} 조회", a.get("views"), b.get("views"))
+        delta_row(f"{name} 1천당 구독", a.get("subs_per_1k"), b.get("subs_per_1k"), 2)
+    ptr = {t["source"]: t.get("recent_pct") for t in prev.get("traffic", [])}
+    for t in summary.get("traffic", []):
+        if (t.get("recent_pct") or 0) >= 5 or (ptr.get(t["source"]) or 0) >= 5:
+            delta_row(f"유입 · {t['source']}", ptr.get(t["source"]), t.get("recent_pct"), 1, "%")
+    old_terms = {k for k, _ in prev.get("search_terms", {}).get("recent", [])}
+    new_terms = [k for k, _ in summary.get("search_terms", {}).get("recent", []) if k not in old_terms]
+    rows.append("\n새로 상위 20에 든 검색어: " + (", ".join(new_terms[:10]) if new_terms else "없음"))
+    md.insert(3, "\n".join(rows) + "\n")
+    summary["compared_with"] = prev.get("collected_at")
 
 md.insert(3, "## 자동 신호\n" + ("\n".join(f"- {s}" for s in signals) if signals else "- (특이 신호 없음)") + "\n")
 summary["signals"] = signals

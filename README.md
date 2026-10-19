@@ -50,6 +50,7 @@ python3 skills/youtube-channel-analyst/scripts/studio.py video <VIDEO_ID>       
 ```
 
 - 채널이 여러 개면 `--channel UC...`
+- **매주 추적**: 날짜별 폴더에 저장하고 `analyze.py <이번> --compare <지난번>` → 리포트 맨 앞에 '지난번 대비' 변화표
 - Studio 언어: 한국어·영어 지원
 
 ## 한계

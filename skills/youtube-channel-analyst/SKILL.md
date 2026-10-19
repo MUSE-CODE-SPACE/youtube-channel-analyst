@@ -38,6 +38,17 @@ Real numbers from the user's own YouTube Studio → a short, decisive strategy. 
    - What to measure after upload (and when: ~48h).
 5. Offer (one line) a PDF/HTML version of the report if the user wants to share it.
 
+## Weekly tracking (experiments, e.g. "run my channel by this for a month")
+
+- Keep one snapshot folder per run: `<WORKDIR>/yt-analysis/YYYY-MM-DD/` (pass it as `--out`). The first one is the baseline (Day 0).
+- From the second run on, compare with the latest previous snapshot:
+  ```bash
+  python3 <SKILL_DIR>/scripts/analyze.py <WORKDIR>/yt-analysis/<today> --compare <WORKDIR>/yt-analysis/<previous>
+  ```
+  This adds "0. 지난번 대비" (28-day views, subs, CTR, shorts/longform conversion, traffic shares, new search terms) at the top of the report.
+- Keep `<WORKDIR>/yt-analysis/actions.md`: after each run append the date, the 3 actions you recommended, and (next run) whether the user did them. Judge each action against the next run's deltas — say plainly when something didn't move the numbers.
+- 28-day windows overlap week to week; call out changes that are within noise (small channels: a single video can swing everything).
+
 ## Reading the signals
 
 - **Subs per 1k views** (content-type table) is the conversion metric. Longform ≫ shorts is common: shorts = reach, longform = subscribers → link every short to a related longform and pin the longform link in the short's comments.
