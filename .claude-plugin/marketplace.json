@@ -1,0 +1,12 @@
+{
+  "name": "muse-skills",
+  "owner": { "name": "MUSE-CODE-SPACE" },
+  "description": "Agent skills by MUSE-CODE-SPACE",
+  "plugins": [
+    {
+      "name": "youtube-channel-analyst",
+      "source": ".",
+      "description": "Analyze your own YouTube channel from real YouTube Studio data (via logged-in Safari, no API key) and get a data-backed upload strategy."
+    }
+  ]
+}

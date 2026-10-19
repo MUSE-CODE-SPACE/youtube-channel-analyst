@@ -1,0 +1,8 @@
+{
+  "name": "youtube-channel-analyst",
+  "version": "1.0.0",
+  "description": "Analyze your own YouTube channel from real YouTube Studio data (via logged-in Safari, no API key) and get a data-backed upload strategy.",
+  "author": { "name": "MUSE-CODE-SPACE" },
+  "license": "MIT",
+  "repository": "https://github.com/MUSE-CODE-SPACE/youtube-channel-analyst"
+}
