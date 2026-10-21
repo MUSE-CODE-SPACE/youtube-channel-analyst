@@ -1,6 +1,6 @@
 ---
 name: youtube-channel-analyst
-description: "Analyze the user's own YouTube channel from real YouTube Studio data and turn it into a strategy: shorts vs longform subscriber conversion, traffic-source shifts, top search terms, CTR/thumbnail fix candidates, retention, and what to upload next. Reads Studio through the user's logged-in Safari (macOS) — no API key or OAuth. Use when the user asks to analyze their YouTube channel/analytics, check how a video is doing, or decide what video to make next based on data. Korean: 유튜브 분석, 채널 분석, 스튜디오 데이터, 다음 영상 뭐 올릴까."
+description: "Analyze the user's own YouTube channel from real YouTube Studio data and turn it into a strategy: shorts vs longform subscriber conversion, traffic-source shifts, top search terms, CTR/thumbnail fix candidates, retention, and what to upload next. Reads Studio through the user's logged-in Safari (macOS) — no API key or OAuth. Use when the user asks to analyze their YouTube channel/analytics, check how a video is doing, decide what video to make next based on data, or audit/fix channel and upload settings (keywords, upload defaults, advanced features, remix, Test & Compare). Korean: 유튜브 분석, 채널 분석, 스튜디오 데이터, 다음 영상 뭐 올릴까, 유튜브 설정, 업로드 세팅."
 ---
 
 # YouTube Channel Analyst
@@ -48,6 +48,10 @@ Real numbers from the user's own YouTube Studio → a short, decisive strategy. 
   This adds "0. 지난번 대비" (28-day views, subs, CTR, shorts/longform conversion, traffic shares, new search terms) at the top of the report.
 - Keep `<WORKDIR>/yt-analysis/actions.md`: after each run append the date, the 3 actions you recommended, and (next run) whether the user did them. Judge each action against the next run's deltas — say plainly when something didn't move the numbers.
 - 28-day windows overlap week to week; call out changes that are within noise (small channels: a single video can swing everything).
+
+## Channel & upload setup audit
+
+When the user asks to check or fix their channel settings ("유튜브 설정해줘", "업로드 세팅", "채널 기본 세팅"), read `references/upload-setup.md` and follow it: read the current Studio settings first, show a table (항목 · 현재 · 권장 · 근거 수준), apply only approved changes, then verify by reopening the settings. Tag every recommendation with its evidence level — don't present creator folklore (e.g. "keep it private 24h first") as fact. Fold keyword suggestions from the channel's real search terms when a `report.md` exists.
 
 ## Reading the signals
 
